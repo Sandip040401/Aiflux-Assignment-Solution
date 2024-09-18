@@ -85,9 +85,10 @@ const TemperatureGraph: React.FC = () => {
   }, []);
 
   const labels = data.map((item) => 
-    new Date(item.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false }) // Always show full time
+    isLargeChart
+      ? new Date(item.timestamp).toLocaleTimeString() // Full time format
+      : new Date(item.timestamp).toLocaleTimeString([], { minute: '2-digit', second: '2-digit', hour12: true }) // Min:sec format for small chart
   );
-  
 
   const values = data.map((item) => item.value);
 
