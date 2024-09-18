@@ -12,6 +12,7 @@ const chartComponents: any = {
 const SingleChartPage: React.FC<{ chartData: any; options: any }> = ({ chartData, options }) => {
   const { chartType } = useParams<{ chartType: string }>();
   const navigate = useNavigate();
+  // @ts-ignore
   const ChartComponent = chartComponents[chartType];
 
   const handleBackClick = () => {
