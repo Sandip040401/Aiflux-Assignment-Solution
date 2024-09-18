@@ -40,5 +40,6 @@ def start_subscriber():
 
 # Start the Flask server
 if __name__ == '__main__':
-    port = int(os.environ.get('PORT', 5000))  # Default to port 5000 if PORT environment variable is not set
+    port = int(os.environ.get('PORT', 10000))  # Set this to the desired port
     app.run(host='0.0.0.0', port=port)
+
