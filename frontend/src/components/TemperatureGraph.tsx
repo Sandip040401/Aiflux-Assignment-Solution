@@ -58,6 +58,7 @@ interface ChartData {
 
 const TemperatureGraph: React.FC = () => {
   const [data, setData] = useState<TemperatureData[]>([]);
+  const [isLargeChart, setIsLargeChart] = useState<boolean>(false); // State to track chart size
 
   const fetchData = async () => {
     try {
@@ -82,7 +83,12 @@ const TemperatureGraph: React.FC = () => {
     return () => clearInterval(interval);
   }, []);
 
-  const labels = data.map((item) => new Date(item.timestamp).toLocaleTimeString());
+  const labels = data.map((item) => 
+    isLargeChart
+      ? new Date(item.timestamp).toLocaleTimeString() // Full time format
+      : new Date(item.timestamp).toLocaleTimeString([], { minute: '2-digit', second: '2-digit' }) // Min:sec format for small chart
+  );
+
   const values = data.map((item) => item.value);
 
   const commonData: ChartData = {
@@ -147,6 +153,10 @@ const TemperatureGraph: React.FC = () => {
     },
   };
 
+  const handleChartClick = () => {
+    setIsLargeChart(!isLargeChart); // Toggle between small and large chart
+  };
+
   return (
     <Router>
       <Routes>
@@ -167,7 +177,7 @@ const TemperatureGraph: React.FC = () => {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8 p-8 bg-gradient-to-br from-gray-50 to-white">
                   {/* Line Chart */}
-                  <Link to="/chart/line" className="block">
+                  <Link to="/chart/line" className="block" onClick={handleChartClick}>
                     <div className="flex flex-col items-center bg-white shadow-md rounded-lg p-5 transition transform hover:-translate-y-2 hover:shadow-xl">
                       <h2 className="text-lg font-medium mb-3 text-gray-700">Line Chart</h2>
                       <div className="w-full h-64">
@@ -177,7 +187,7 @@ const TemperatureGraph: React.FC = () => {
                   </Link>
 
                   {/* Bar Chart */}
-                  <Link to="/chart/bar" className="block">
+                  <Link to="/chart/bar" className="block" onClick={handleChartClick}>
                     <div className="flex flex-col items-center bg-white shadow-md rounded-lg p-5 transition transform hover:-translate-y-2 hover:shadow-xl">
                       <h2 className="text-lg font-medium mb-3 text-gray-700">Bar Chart</h2>
                       <div className="w-full h-64">
@@ -187,7 +197,7 @@ const TemperatureGraph: React.FC = () => {
                   </Link>
 
                   {/* Radar Chart */}
-                  <Link to="/chart/radar" className="block">
+                  <Link to="/chart/radar" className="block" onClick={handleChartClick}>
                     <div className="flex flex-col items-center bg-white shadow-md rounded-lg p-5 transition transform hover:-translate-y-2 hover:shadow-xl">
                       <h2 className="text-lg font-medium mb-3 text-gray-700">Radar Chart</h2>
                       <div className="w-full h-64">
@@ -197,7 +207,7 @@ const TemperatureGraph: React.FC = () => {
                   </Link>
 
                   {/* Doughnut Chart */}
-                  <Link to="/chart/doughnut" className="block">
+                  <Link to="/chart/doughnut" className="block" onClick={handleChartClick}>
                     <div className="flex flex-col items-center bg-white shadow-md rounded-lg p-5 transition transform hover:-translate-y-2 hover:shadow-xl">
                       <h2 className="text-lg font-medium mb-3 text-gray-700">Doughnut Chart</h2>
                       <div className="w-full h-64">
