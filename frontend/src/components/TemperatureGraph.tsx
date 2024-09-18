@@ -62,7 +62,7 @@ const TemperatureGraph: React.FC = () => {
 
   const fetchData = async () => {
     try {
-      const response = await axios.get<TemperatureData[]>('http://localhost:5000/temperatures');
+      const response = await axios.get<TemperatureData[]>('https://aiflux-assignment-solution.onrender.com/temperatures');
       const currentTime = new Date().getTime();
 
       const filteredData = response.data.filter((item) => {
