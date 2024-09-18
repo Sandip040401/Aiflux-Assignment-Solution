@@ -15,7 +15,7 @@ import {
   ArcElement,
   RadialLinearScale,
 } from 'chart.js';
-import { Link, BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { Link, BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import { RiTempHotLine } from 'react-icons/ri';
 import SingleChartPage from './SingleChartPage'; // Assuming you have a SingleChartPage component
@@ -60,6 +60,7 @@ const TemperatureGraph: React.FC = () => {
   const [data, setData] = useState<TemperatureData[]>([]);
   const [isLargeChart, setIsLargeChart] = useState<boolean>(false); // State to track chart size
   const backendUrl = import.meta.env.VITE_BASE_URL;
+  const location = useLocation(); // Get current location
 
   const fetchData = async () => {
     try {
@@ -84,11 +85,13 @@ const TemperatureGraph: React.FC = () => {
     return () => clearInterval(interval);
   }, []);
 
-  const labels = data.map((item) => 
-    isLargeChart
-      ? new Date(item.timestamp).toLocaleTimeString() // Full time format
-      : new Date(item.timestamp).toLocaleTimeString([], { minute: '2-digit', second: '2-digit', hour12: true }) // Min:sec format for small chart
-  );
+  const labels = data.map((item) => {
+    const options: Intl.DateTimeFormatOptions = location.pathname === '/' 
+      ? { minute: '2-digit', second: '2-digit' } 
+      : { minute: '2-digit', second: '2-digit', hour12: true };
+  
+    return new Date(item.timestamp).toLocaleTimeString([], options);
+  });
 
   const values = data.map((item) => item.value);
 
