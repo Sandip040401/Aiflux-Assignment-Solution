@@ -1,4 +1,4 @@
-
+the website is also deployed feel free to check it [Note: requests may delay initially as it is hosted on a free server]
 ---
 
 # Temperature Monitoring System
