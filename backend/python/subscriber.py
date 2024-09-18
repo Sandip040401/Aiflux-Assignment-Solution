@@ -1,5 +1,12 @@
 #subscriber.py
+import subprocess
+import sys
+
+# Install paho-mqtt if not already installed
+subprocess.check_call([sys.executable, "-m", "pip", "install", "paho-mqtt"])
+
 import paho.mqtt.client as mqtt
+
 
 # MQTT Broker details
 broker = 'broker.hivemq.com'  # Public MQTT broker

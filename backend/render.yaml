@@ -1,0 +1,9 @@
+services:
+  - type: web
+    name: aiflux
+    env: node
+    buildCommand: npm install && npm run build
+    startCommand: pip install paho-mqtt && npm start & python ./python/subscriber.py & python ./python/publisher.py
+    envVars:
+      - key: DATABASE_URL
+        value: YOUR_DATABASE_URL

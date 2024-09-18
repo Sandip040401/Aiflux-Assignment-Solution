@@ -1,29 +1,15 @@
 import express from 'express';
 import { PrismaClient } from '@prisma/client';
-import './mqttSubscriber';
+import './mqttSubscriber';  // Assuming this is for your MQTT subscription
 import cors from 'cors';
-import axios from 'axios';
+import { spawn } from 'child_process';
+import path from 'path';
 
 const app = express();
 const prisma = new PrismaClient();
 
 // Use CORS middleware
 app.use(cors());
-
-// Function to call the Python HTTP service
-const callPythonService = async (endpoint: string) => {
-  try {
-    const response = await axios.get(`https://aiflux-assignment-solution-1.onrender.com/${endpoint}`);
-    console.log(response.data);
-  } catch (error) {
-  // @ts-ignore
-    console.error(`Error calling Python service: ${error.message}`);
-  }
-};
-
-// Call the Python service to run the publisher and subscriber
-callPythonService('run-publisher');
-callPythonService('run-subscriber');
 
 app.get('/temperatures', async (req, res) => {
   const now = new Date();
@@ -41,8 +27,29 @@ app.get('/temperatures', async (req, res) => {
   res.json(temperatures);
 });
 
+// Run Python scripts
+const runPythonFile = (fileName: string) => {
+  const pythonProcess = spawn('python', [path.join(__dirname, fileName)]);
+
+  pythonProcess.stdout.on('data', (data) => {
+    console.log(`stdout: ${data}`);
+  });
+
+  pythonProcess.stderr.on('data', (data) => {
+    console.error(`stderr: ${data}`);
+  });
+
+  pythonProcess.on('close', (code) => {
+    console.log(`Python script ${fileName} exited with code ${code}`);
+  });
+};
+
+// Run subscriber.py and publisher.py
+runPythonFile('subscriber.py');
+runPythonFile('publisher.py');
+
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
-  console.log(`Server running on ${PORT}`);
+  console.log(`Server running on http://localhost:${PORT}`);
 });
