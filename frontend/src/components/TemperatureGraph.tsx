@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react'; 
 import { Line, Bar, Radar, Doughnut } from 'react-chartjs-2';
 import {
   Chart as ChartJS,
@@ -70,7 +70,7 @@ const TemperatureGraph: React.FC = () => {
         return currentTime - itemTime <= 60000; // Data from the last 60 seconds
       });
 
-      const reducedData = filteredData.filter((_, index) => index % 5 === 0);
+      const reducedData = filteredData.filter((_, index) => index % 1 === 0); // Show every data point for last 60 seconds
       setData(reducedData);
     } catch (error) {
       console.error('Error fetching data:', error);
@@ -79,7 +79,7 @@ const TemperatureGraph: React.FC = () => {
 
   useEffect(() => {
     fetchData();
-    const interval = setInterval(fetchData, 2000); // Fetch data every 2 seconds
+    const interval = setInterval(fetchData, 1000); // Fetch data every second
     return () => clearInterval(interval);
   }, []);
 
@@ -171,7 +171,7 @@ const TemperatureGraph: React.FC = () => {
                     Real-Time Temperature Monitor (Last 1 Minute)
                   </h1>
                   <span className="text-sm bg-white bg-opacity-20 rounded-full px-4 py-1 shadow-lg">
-                    Updated every 2 seconds
+                    Updated every second
                   </span>
                 </header>
 
