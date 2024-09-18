@@ -4,7 +4,6 @@ import './mqttSubscriber';
 import cors from 'cors';
 import { spawn } from 'child_process';
 import path from 'path';
-import os from 'os';
 
 const app = express();
 const prisma = new PrismaClient();
@@ -12,10 +11,8 @@ const prisma = new PrismaClient();
 // Use CORS middleware
 app.use(cors());
 
-// Determine the path to the Python executable based on the operating system
-const pythonPath = os.platform() === 'win32'
-  ? path.resolve(__dirname, '../venv/Scripts/python.exe')  // Windows path
-  : path.resolve(__dirname, '../venv/bin/python');          // Unix path
+// Define the path to the Python executable in the virtual environment for Windows
+const pythonPath = path.resolve(__dirname, '../venv/Scripts/python.exe');
 
 // Function to start Python scripts
 const startPythonScript = (scriptName: string) => {
