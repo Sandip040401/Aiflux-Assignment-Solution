@@ -6,6 +6,8 @@ import './mqttSubscriber';
 import cors from 'cors';
 import { spawn } from 'child_process';
 import path from 'path';
+import os from 'os';
+
 
 const app = express();
 const prisma = new PrismaClient();
@@ -13,64 +15,32 @@ const prisma = new PrismaClient();
 // Use CORS middleware
 app.use(cors());
 
-// Function to run shell commands like `source venv/bin/activate && python`
-const runShellCommand = (command: string, args: string[]) => {
-  return new Promise((resolve, reject) => {
-    const process = spawn(command, args);
+// Define the Python path based on the OS
+const pythonPath = os.platform() === 'win32'
+  ? path.resolve(__dirname, '..', 'venv', 'Scripts', 'python.exe')
+  : path.resolve(__dirname, '..', 'venv', 'bin', 'python');
 
-    process.stdout.on('data', (data) => {
-      console.log(`stdout: ${data}`);
-    });
+// Function to start Python scripts
+const startPythonScript = (scriptName: string) => {
+  const scriptPath = path.resolve(__dirname, '..', scriptName);
+  const process = spawn(pythonPath, [scriptPath], { stdio: 'inherit' });
 
-    process.stderr.on('data', (data) => {
-      console.error(`stderr: ${data}`);
-    });
+  process.on('error', (err) => {
+    console.error(`Failed to start ${scriptName}: ${err.message}`);
+  });
 
-    process.on('close', (code) => {
-      if (code === 0) {
-        resolve(`Command executed successfully with code ${code}`);
-      } else {
-        reject(`Command failed with code ${code}`);
-      }
-    });
+  process.on('exit', (code) => {
+    console.log(`${scriptName} exited with code ${code}`);
   });
 };
 
-// Start the Python scripts after activating virtual environment
-const startPythonScripts = () => {
-  const publisherPath = path.join(__dirname, 'publisher.py');
-  const subscriberPath = path.join(__dirname, 'subscriber.py');
+// Start the Python scripts
+startPythonScript('publisher.py');
+startPythonScript('subscriber.py');
 
-  // Use virtual environment and then run Python scripts
-  const startPythonScript = (scriptPath: string, name: string) => {
-    const venvPath = path.join(__dirname, 'venv', 'bin', 'python');
-    const process = spawn(venvPath, [scriptPath]);
-
-    process.stdout.on('data', (data) => {
-      console.log(`${name} Output: ${data}`);
-    });
-
-    process.stderr.on('data', (data) => {
-      console.error(`${name} Error: ${data}`);
-    });
-
-    process.on('close', (code) => {
-      console.log(`${name} exited with code ${code}`);
-    });
-  };
-
-  startPythonScript(publisherPath, 'Publisher');
-  startPythonScript(subscriberPath, 'Subscriber');
-};
-
-// Call to start the scripts
-startPythonScripts();
-
-// Temperature endpoint
 app.get('/temperatures', async (req, res) => {
   const now = new Date();
   const oneMinuteAgo = new Date(now.getTime() - 60 * 1000);
-
   const temperatures = await prisma.temperature.findMany({
     where: {
       timestamp: {
@@ -81,11 +51,9 @@ app.get('/temperatures', async (req, res) => {
       timestamp: 'asc',
     },
   });
-
   res.json(temperatures);
 });
 
-// Start the server
 app.listen(5000, () => {
   console.log('Server running on http://localhost:5000');
 });
