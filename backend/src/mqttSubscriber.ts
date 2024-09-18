@@ -28,7 +28,7 @@ client.on('message', async (topic, message) => {
     await prisma.temperature.create({
       data: {
         value: temperature,
-        timestamp: new Date(), // Make sure to include the timestamp
+        timestamp: new Date(),
       },
     });
     console.log('Temperature stored in the database.');

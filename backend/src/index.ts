@@ -1,14 +1,16 @@
+// index.ts
 import express from 'express';
 import { PrismaClient } from '@prisma/client';
-import './mqttSubscriber';  // Assuming this is for your MQTT subscription
-import cors from 'cors';
 import { spawn } from 'child_process';
+import cors from 'cors';
 import path from 'path';
+import './mqttSubscriber';
+
 
 const app = express();
 const prisma = new PrismaClient();
 
-// Use CORS middleware
+// CORS middleware
 app.use(cors());
 
 app.get('/temperatures', async (req, res) => {
@@ -27,7 +29,7 @@ app.get('/temperatures', async (req, res) => {
   res.json(temperatures);
 });
 
-// Run Python scripts
+// Python scripts
 const runPythonFile = (fileName: string) => {
   const pythonProcess = spawn('python', [path.join(__dirname, fileName)]);
 
@@ -44,7 +46,7 @@ const runPythonFile = (fileName: string) => {
   });
 };
 
-// Run subscriber.py and publisher.py
+// subscriber.py and publisher.py
 runPythonFile('subscriber.py');
 runPythonFile('publisher.py');
 

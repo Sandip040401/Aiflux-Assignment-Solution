@@ -59,10 +59,11 @@ interface ChartData {
 const TemperatureGraph: React.FC = () => {
   const [data, setData] = useState<TemperatureData[]>([]);
   const [isLargeChart, setIsLargeChart] = useState<boolean>(false); // State to track chart size
+  const backendUrl = import.meta.env.VITE_BASE_URL;
 
   const fetchData = async () => {
     try {
-      const response = await axios.get<TemperatureData[]>('https://aiflux-assignment-solution.onrender.com/temperatures');
+      const response = await axios.get<TemperatureData[]>(`${backendUrl}/temperatures`);
       const currentTime = new Date().getTime();
 
       const filteredData = response.data.filter((item) => {
@@ -104,7 +105,7 @@ const TemperatureGraph: React.FC = () => {
         pointHoverBackgroundColor: '#FFCE56',
         pointHoverBorderColor: '#FF6384',
         fill: true,
-        tension: 0.4, // Smooth curve
+        tension: 0.4,
       },
     ],
   };
@@ -154,7 +155,7 @@ const TemperatureGraph: React.FC = () => {
   };
 
   const handleChartClick = () => {
-    setIsLargeChart(!isLargeChart); // Toggle between small and large chart
+    setIsLargeChart(!isLargeChart);
   };
 
   return (
@@ -176,6 +177,7 @@ const TemperatureGraph: React.FC = () => {
                 </header>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8 p-8 bg-gradient-to-br from-gray-50 to-white">
+                  
                   {/* Line Chart */}
                   <Link to="/chart/line" className="block" onClick={handleChartClick}>
                     <div className="flex flex-col items-center bg-white shadow-md rounded-lg p-5 transition transform hover:-translate-y-2 hover:shadow-xl">

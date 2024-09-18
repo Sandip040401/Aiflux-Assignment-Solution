@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Line, Bar, Radar, Doughnut } from 'react-chartjs-2';
 import { useParams, useNavigate } from 'react-router-dom';
@@ -17,7 +16,7 @@ const SingleChartPage: React.FC<{ chartData: any; options: any }> = ({ chartData
   const ChartComponent = chartComponents[chartType];
 
   const handleBackClick = () => {
-    navigate(-1); // Go back to the previous page
+    navigate(-1);
   };
 
   return (
