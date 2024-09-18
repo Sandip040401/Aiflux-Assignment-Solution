@@ -13,7 +13,7 @@ const prisma = new PrismaClient();
 // Use CORS middleware
 app.use(cors());
 
-// Function to run shell commands like `pip install`
+// Function to run shell commands like `source venv/bin/activate && python`
 const runShellCommand = (command: string, args: string[]) => {
   return new Promise((resolve, reject) => {
     const process = spawn(command, args);
@@ -36,25 +36,15 @@ const runShellCommand = (command: string, args: string[]) => {
   });
 };
 
-// Install paho-mqtt in the Python environment
-runShellCommand('pip', ['install', 'paho-mqtt'])
-  .then((result) => {
-    console.log(result);
-    // Start the Python scripts after installation
-    startPythonScripts();
-  })
-  .catch((error) => {
-    console.error('Failed to install paho-mqtt:', error);
-  });
-
-// Function to start Python scripts
+// Start the Python scripts after activating virtual environment
 const startPythonScripts = () => {
   const publisherPath = path.join(__dirname, 'publisher.py');
   const subscriberPath = path.join(__dirname, 'subscriber.py');
 
-  // Function to start a Python script
+  // Use virtual environment and then run Python scripts
   const startPythonScript = (scriptPath: string, name: string) => {
-    const process = spawn('python', [scriptPath]);
+    const venvPath = path.join(__dirname, 'venv', 'bin', 'python');
+    const process = spawn(venvPath, [scriptPath]);
 
     process.stdout.on('data', (data) => {
       console.log(`${name} Output: ${data}`);
@@ -72,6 +62,9 @@ const startPythonScripts = () => {
   startPythonScript(publisherPath, 'Publisher');
   startPythonScript(subscriberPath, 'Subscriber');
 };
+
+// Call to start the scripts
+startPythonScripts();
 
 // Temperature endpoint
 app.get('/temperatures', async (req, res) => {
@@ -93,8 +86,6 @@ app.get('/temperatures', async (req, res) => {
 });
 
 // Start the server
-const PORT = process.env.PORT || 5000;
-
-app.listen(PORT, () => {
-  console.log(`Server running on ${PORT}`);
+app.listen(5000, () => {
+  console.log('Server running on http://localhost:5000');
 });
