@@ -114,7 +114,7 @@ const TemperatureGraph: React.FC = () => {
     maintainAspectRatio: false,
     animation: {
       duration: 1000,
-      easing: 'easeInOutQuad',
+      easing: 'easeInOutQuad' as const, // Use allowed easing type
     },
     scales: {
       x: {
@@ -181,7 +181,7 @@ const TemperatureGraph: React.FC = () => {
                     <div className="flex flex-col items-center bg-white shadow-md rounded-lg p-5 transition transform hover:-translate-y-2 hover:shadow-xl">
                       <h2 className="text-lg font-medium mb-3 text-gray-700">Line Chart</h2>
                       <div className="w-full h-64">
-                        <Line data={commonData} options={options} />
+                        <Line data={commonData}  options={options} />
                       </div>
                     </div>
                   </Link>
@@ -191,7 +191,18 @@ const TemperatureGraph: React.FC = () => {
                     <div className="flex flex-col items-center bg-white shadow-md rounded-lg p-5 transition transform hover:-translate-y-2 hover:shadow-xl">
                       <h2 className="text-lg font-medium mb-3 text-gray-700">Bar Chart</h2>
                       <div className="w-full h-64">
-                        <Bar data={commonData} options={{ ...options, datasets: [{ ...commonData.datasets[0], borderRadius: 5 }] }} />
+                      <Bar 
+                        data={{ 
+                          ...commonData, 
+                          datasets: [
+                            { 
+                              ...commonData.datasets[0], 
+                              borderRadius: 5 
+                            }
+                          ] 
+                        }} 
+                        options={options} 
+                      />
                       </div>
                     </div>
                   </Link>
