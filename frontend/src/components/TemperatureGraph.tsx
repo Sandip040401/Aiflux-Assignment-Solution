@@ -35,20 +35,45 @@ ChartJS.register(
   RadialLinearScale
 );
 
+// Define TypeScript types
+interface TemperatureData {
+  timestamp: string;
+  value: number;
+}
+
+interface ChartData {
+  labels: string[];
+  datasets: {
+    label: string;
+    data: number[];
+    borderColor: string;
+    backgroundColor: string;
+    pointBackgroundColor: string;
+    pointBorderColor: string;
+    pointHoverBackgroundColor: string;
+    pointHoverBorderColor: string;
+    fill: boolean;
+    tension: number;
+  }[];
+}
+
 const TemperatureGraph: React.FC = () => {
-  const [data, setData] = useState<any[]>([]);
+  const [data, setData] = useState<TemperatureData[]>([]);
 
   const fetchData = async () => {
     try {
-      const response = await axios.get('https://aiflux-assignment-solution.onrender.com/temperatures');
+      const response = await axios.get<TemperatureData[]>('http://localhost:5000/temperatures');
       const currentTime = new Date().getTime();
 
-      const filteredData = response.data.filter((item: any) => {
+      const filteredData = response.data.filter((item) => {
         const itemTime = new Date(item.timestamp).getTime();
         return currentTime - itemTime <= 60000;
       });
 
-      setData(filteredData);
+      // Optional: Reduce data points
+      const reducedData = filteredData.filter((_, index) => index % 5 === 0);
+
+      setData(reducedData);
     } catch (error) {
       console.error('Error fetching data:', error);
     }
@@ -60,23 +85,23 @@ const TemperatureGraph: React.FC = () => {
     return () => clearInterval(interval);
   }, []);
 
-  const labels = data.map((item: any) => new Date(item.timestamp).toLocaleTimeString());
-  const values = data.map((item: any) => item.value);
+  const labels = data.map((item) => new Date(item.timestamp).toLocaleTimeString());
+  const values = data.map((item) => item.value);
 
-  const commonData = {
+  const commonData: ChartData = {
     labels: labels,
     datasets: [
       {
         label: 'Temperature (°C)',
         data: values,
-        borderColor: 'rgba(75, 192, 192, 1)', // Teal border
-        backgroundColor: 'rgba(75, 192, 192, 0.2)', // Teal background with transparency
-        pointBackgroundColor: '#FF6384', // Red points
-        pointBorderColor: '#fff', // White point borders
-        pointHoverBackgroundColor: '#FFCE56', // Yellow on hover
-        pointHoverBorderColor: '#FF6384', // Red hover border
+        borderColor: 'rgba(75, 192, 192, 1)',
+        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+        pointBackgroundColor: '#FF6384',
+        pointBorderColor: '#fff',
+        pointHoverBackgroundColor: '#FFCE56',
+        pointHoverBorderColor: '#FF6384',
         fill: true,
-        tension: 0.4,
+        tension: 0.3,
       },
     ],
   };
@@ -87,12 +112,18 @@ const TemperatureGraph: React.FC = () => {
     scales: {
       x: {
         ticks: {
-          color: '#4b5563', // Gray text for X-axis
+          color: '#4b5563',
+        },
+        grid: {
+          display: false,
         },
       },
       y: {
         ticks: {
-          color: '#4b5563', // Gray text for Y-axis
+          color: '#4b5563',
+        },
+        grid: {
+          borderColor: '#e5e7eb',
         },
         suggestedMin: 0,
       },
@@ -101,7 +132,12 @@ const TemperatureGraph: React.FC = () => {
       legend: {
         display: true,
         labels: {
-          color: '#4b5563', // Gray legend labels
+          color: '#4b5563',
+        },
+      },
+      tooltip: {
+        callbacks: {
+          label: (context: any) => `${context.dataset.label}: ${context.raw}°C`,
         },
       },
     },
