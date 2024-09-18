@@ -1,5 +1,3 @@
-
-// index.ts
 import express from 'express';
 import { PrismaClient } from '@prisma/client';
 import './mqttSubscriber';
@@ -8,21 +6,20 @@ import { spawn } from 'child_process';
 import path from 'path';
 import os from 'os';
 
-
 const app = express();
 const prisma = new PrismaClient();
 
 // Use CORS middleware
 app.use(cors());
 
-// Define the Python path based on the OS
+// Determine the path to the Python executable based on the operating system
 const pythonPath = os.platform() === 'win32'
-  ? path.resolve(__dirname, '..', 'venv', 'Scripts', 'python.exe')
-  : path.resolve(__dirname, '..', 'venv', 'bin', 'python');
+  ? path.resolve(__dirname, '../venv/Scripts/python.exe')  // Windows path
+  : path.resolve(__dirname, '../venv/bin/python');          // Unix path
 
 // Function to start Python scripts
 const startPythonScript = (scriptName: string) => {
-  const scriptPath = path.resolve(__dirname, '..', scriptName);
+  const scriptPath = path.resolve(__dirname, scriptName);
   const process = spawn(pythonPath, [scriptPath], { stdio: 'inherit' });
 
   process.on('error', (err) => {
