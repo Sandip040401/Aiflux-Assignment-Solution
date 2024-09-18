@@ -5,14 +5,14 @@ import sys
 
 app = Flask(__name__)
 
-# Get the path to the correct Python executable (this works across different platforms)
+# Get the path to the correct Python executable
 PYTHON_EXECUTABLE = sys.executable
 
-# Path to your scripts (adjust according to your folder structure)
-PUBLISHER_SCRIPT = os.path.join(os.path.dirname(__file__), 'publisher.py')
-SUBSCRIBER_SCRIPT = os.path.join(os.path.dirname(__file__), 'subscriber.py')
+# Paths to the publisher and subscriber scripts
+PUBLISHER_SCRIPT = os.path.join(os.path.dirname(__file__), 'scripts', 'publisher.py')
+SUBSCRIBER_SCRIPT = os.path.join(os.path.dirname(__file__), 'scripts', 'subscriber.py')
 
-# Function to start a script with better logging
+# Function to start the script
 def start_script(script_path):
     try:
         process = subprocess.Popen([PYTHON_EXECUTABLE, script_path], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -20,7 +20,7 @@ def start_script(script_path):
     except Exception as e:
         raise RuntimeError(f"Failed to start script {script_path}: {str(e)}")
 
-# Endpoint to start publisher.py
+# Route to start publisher
 @app.route('/start-publisher', methods=['GET'])
 def start_publisher():
     try:
@@ -29,7 +29,7 @@ def start_publisher():
     except Exception as e:
         return jsonify({'status': 'Error starting publisher', 'error': str(e)}), 500
 
-# Endpoint to start subscriber.py
+# Route to start subscriber
 @app.route('/start-subscriber', methods=['GET'])
 def start_subscriber():
     try:
@@ -38,8 +38,7 @@ def start_subscriber():
     except Exception as e:
         return jsonify({'status': 'Error starting subscriber', 'error': str(e)}), 500
 
-# Start the Flask server
+# Start Flask server
 if __name__ == '__main__':
-    port = int(os.environ.get('PORT', 10000))  # Set this to the desired port
+    port = int(os.environ.get('PORT', 5000))
     app.run(host='0.0.0.0', port=port)
-

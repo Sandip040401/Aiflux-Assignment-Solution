@@ -1,7 +1,7 @@
 services:
   - type: web
-    name: python-flask-app
+    name: MyFlaskApp
     env: python
-    plan: free
-    buildCommand: "pip install -r requirements.txt"
-    startCommand: "python app.py"
+    buildCommand: pip install -r requirements.txt
+    startCommand: waitress-serve --listen=0.0.0.0:$PORT app:app
+    autoDeploy: true
