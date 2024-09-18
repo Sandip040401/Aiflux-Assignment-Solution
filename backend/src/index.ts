@@ -2,8 +2,7 @@ import express from 'express';
 import { PrismaClient } from '@prisma/client';
 import './mqttSubscriber';
 import cors from 'cors';
-import { spawn } from 'child_process';
-import path from 'path';
+import axios from 'axios';
 
 const app = express();
 const prisma = new PrismaClient();
@@ -11,26 +10,20 @@ const prisma = new PrismaClient();
 // Use CORS middleware
 app.use(cors());
 
-// Define the path to the Python executable in the virtual environment for Windows
-const pythonPath = path.resolve(__dirname, '../venv/Scripts/python.exe');
-
-// Function to start Python scripts
-const startPythonScript = (scriptName: string) => {
-  const scriptPath = path.resolve(__dirname, scriptName);
-  const process = spawn(pythonPath, [scriptPath], { stdio: 'inherit' });
-
-  process.on('error', (err) => {
-    console.error(`Failed to start ${scriptName}: ${err.message}`);
-  });
-
-  process.on('exit', (code) => {
-    console.log(`${scriptName} exited with code ${code}`);
-  });
+// Function to call the Python HTTP service
+const callPythonService = async (endpoint: string) => {
+  try {
+    const response = await axios.get(`https://aiflux-assignment-solution-1.onrender.com/${endpoint}`);
+    console.log(response.data);
+  } catch (error) {
+  // @ts-ignore
+    console.error(`Error calling Python service: ${error.message}`);
+  }
 };
 
-// Start the Python scripts
-startPythonScript('publisher.py');
-startPythonScript('subscriber.py');
+// Call the Python service to run the publisher and subscriber
+callPythonService('run-publisher');
+callPythonService('run-subscriber');
 
 app.get('/temperatures', async (req, res) => {
   const now = new Date();
