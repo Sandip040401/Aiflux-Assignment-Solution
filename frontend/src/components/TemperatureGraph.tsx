@@ -35,7 +35,6 @@ ChartJS.register(
   RadialLinearScale
 );
 
-// Define TypeScript types
 interface TemperatureData {
   timestamp: string;
   value: number;
@@ -62,7 +61,7 @@ const TemperatureGraph: React.FC = () => {
 
   const fetchData = async () => {
     try {
-      const response = await axios.get<TemperatureData[]>('https://aiflux-assignment-solution.onrender.com/temperatures');
+      const response = await axios.get<TemperatureData[]>('http://localhost:5000/temperatures');
       const currentTime = new Date().getTime();
 
       const filteredData = response.data.filter((item) => {
@@ -70,9 +69,7 @@ const TemperatureGraph: React.FC = () => {
         return currentTime - itemTime <= 60000;
       });
 
-      // Optional: Reduce data points
       const reducedData = filteredData.filter((_, index) => index % 5 === 0);
-
       setData(reducedData);
     } catch (error) {
       console.error('Error fetching data:', error);
@@ -94,14 +91,14 @@ const TemperatureGraph: React.FC = () => {
       {
         label: 'Temperature (°C)',
         data: values,
-        borderColor: 'rgba(75, 192, 192, 1)',
-        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+        borderColor: 'rgba(54, 162, 235, 1)',
+        backgroundColor: 'rgba(75, 192, 192, 0.4)',
         pointBackgroundColor: '#FF6384',
         pointBorderColor: '#fff',
         pointHoverBackgroundColor: '#FFCE56',
         pointHoverBorderColor: '#FF6384',
         fill: true,
-        tension: 0.3,
+        tension: 0.4, // Smooth curve
       },
     ],
   };
@@ -109,10 +106,14 @@ const TemperatureGraph: React.FC = () => {
   const options = {
     responsive: true,
     maintainAspectRatio: false,
+    animation: {
+      duration: 1000,
+      easing: 'easeInOutQuad',
+    },
     scales: {
       x: {
         ticks: {
-          color: '#4b5563',
+          color: '#374151',
         },
         grid: {
           display: false,
@@ -120,10 +121,10 @@ const TemperatureGraph: React.FC = () => {
       },
       y: {
         ticks: {
-          color: '#4b5563',
+          color: '#374151',
         },
         grid: {
-          borderColor: '#e5e7eb',
+          color: '#e5e7eb',
         },
         suggestedMin: 0,
       },
@@ -132,10 +133,13 @@ const TemperatureGraph: React.FC = () => {
       legend: {
         display: true,
         labels: {
-          color: '#4b5563',
+          color: '#374151',
         },
       },
       tooltip: {
+        backgroundColor: 'rgba(0,0,0,0.7)',
+        titleColor: '#fff',
+        bodyColor: '#fff',
         callbacks: {
           label: (context: any) => `${context.dataset.label}: ${context.raw}°C`,
         },
@@ -149,8 +153,8 @@ const TemperatureGraph: React.FC = () => {
         <Route
           path="/"
           element={
-            <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100 py-10 px-4">
-              <div className="max-w-7xl w-full bg-white rounded-3xl shadow-lg overflow-hidden transition-all hover:shadow-xl">
+            <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-r from-blue-100 to-indigo-200 py-10 px-4">
+              <div className="max-w-7xl w-full bg-white rounded-3xl shadow-xl overflow-hidden transition-all hover:shadow-2xl">
                 <header className="flex justify-between items-center bg-gradient-to-r from-teal-400 to-blue-500 text-white px-6 py-5 rounded-t-3xl shadow-lg">
                   <h1 className="text-3xl font-semibold flex items-center gap-3 tracking-wide">
                     <RiTempHotLine size={35} className="text-yellow-300 animate-bounce" />
@@ -177,7 +181,7 @@ const TemperatureGraph: React.FC = () => {
                     <div className="flex flex-col items-center bg-white shadow-md rounded-lg p-5 transition transform hover:-translate-y-2 hover:shadow-xl">
                       <h2 className="text-lg font-medium mb-3 text-gray-700">Bar Chart</h2>
                       <div className="w-full h-64">
-                        <Bar data={commonData} options={options} />
+                        <Bar data={commonData} options={{ ...options, datasets: [{ ...commonData.datasets[0], borderRadius: 5 }] }} />
                       </div>
                     </div>
                   </Link>
