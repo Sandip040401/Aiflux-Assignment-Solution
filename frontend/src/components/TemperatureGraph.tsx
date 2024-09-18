@@ -18,7 +18,7 @@ import {
 import { Link, BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import axios from 'axios';
 import { RiTempHotLine } from 'react-icons/ri';
-import SingleChartPage from './SingleChartPage';
+import SingleChartPage from './SingleChartPage'; // Assuming you have a SingleChartPage component
 
 ChartJS.register(
   LineElement,
@@ -67,7 +67,7 @@ const TemperatureGraph: React.FC = () => {
 
       const filteredData = response.data.filter((item) => {
         const itemTime = new Date(item.timestamp).getTime();
-        return currentTime - itemTime <= 60000;
+        return currentTime - itemTime <= 60000; // Data from the last 60 seconds
       });
 
       const reducedData = filteredData.filter((_, index) => index % 5 === 0);
@@ -79,7 +79,7 @@ const TemperatureGraph: React.FC = () => {
 
   useEffect(() => {
     fetchData();
-    const interval = setInterval(fetchData, 2000);
+    const interval = setInterval(fetchData, 2000); // Fetch data every 2 seconds
     return () => clearInterval(interval);
   }, []);
 
