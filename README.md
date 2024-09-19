@@ -58,6 +58,7 @@ This repository contains a real-time temperature monitoring system with the foll
    ```bash
    npm start
    ```
+   ### Note: If you have any problem with python not installing kindly install ```pip install paho-mqtt``` manually in backend root.
 
 
 ### 2. Frontend Setup (React.js)
