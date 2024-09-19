@@ -30,7 +30,7 @@ app.get('/temperatures', async (req, res) => {
 
 // Function to run Python scripts
 const runPythonFile = (fileName: string) => {
-  const pythonProcess = spawn('python3', [path.join(__dirname, 'src', fileName)]);  // Ensure proper path
+  const pythonProcess = spawn('python3', [path.join(__dirname, fileName)]);  // Ensure proper path
 
   pythonProcess.stdout.on('data', (data) => {
     console.log(`stdout: ${data}`);
