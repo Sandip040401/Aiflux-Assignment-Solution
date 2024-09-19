@@ -66,12 +66,14 @@ const TemperatureGraph: React.FC = () => {
       const response = await axios.get<TemperatureData[]>(`${backendUrl}/temperatures`);
       const currentTime = new Date().getTime();
 
+      // Filter data for the last 60 seconds
       const filteredData = response.data.filter((item) => {
         const itemTime = new Date(item.timestamp).getTime();
         return currentTime - itemTime <= 60000; // Data from the last 60 seconds
       });
 
-      const reducedData = filteredData.filter((_, index) => index % 1 === 0); // Show every data point for last 60 seconds
+      // Show every data point for last 60 seconds
+      const reducedData = filteredData.filter((_, index) => index % 1 === 0);
       setData(reducedData);
     } catch (error) {
       console.error('Error fetching data:', error);
@@ -84,11 +86,13 @@ const TemperatureGraph: React.FC = () => {
     return () => clearInterval(interval);
   }, []);
 
-  const labels = data.map((item) =>
-    isLargeChart
-      ? new Date(item.timestamp).toLocaleTimeString() // Full time format
-      : new Date(item.timestamp).toLocaleTimeString([], { minute: '2-digit', second: '2-digit' }) // Min:sec format for small chart
-  );
+  // Format labels based on chart size state
+  const labels = data.map((item) => {
+    const date = new Date(item.timestamp);
+    return isLargeChart
+      ? date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' }) // Full time format
+      : date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' }); // Min:sec format for small chart
+  });
 
   const values = data.map((item) => item.value);
 
@@ -187,7 +191,7 @@ const TemperatureGraph: React.FC = () => {
                     <div className="flex flex-col items-center bg-white shadow-md rounded-lg p-5 transition transform hover:-translate-y-2 hover:shadow-xl">
                       <h2 className="text-lg font-medium mb-3 text-gray-700">Line Chart</h2>
                       <div className="w-full h-64">
-                        <Line data={commonData}  options={options} />
+                        <Line data={commonData} options={options} />
                       </div>
                     </div>
                   </Link>
