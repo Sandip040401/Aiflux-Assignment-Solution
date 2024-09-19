@@ -24,7 +24,7 @@ This repository contains a real-time temperature monitoring system with the foll
    npm install
    ```
 
-3. Update the `.env` file with your PostgreSQL connection details.
+3. Update the `.env` file with your PostgreSQL connection details. Rename .env.example to .env
 
 4. You can get it from Aiven.io [https://aiven.io/] or use docker to create locally.
     Using Docker
