@@ -9,13 +9,20 @@ const chartComponents: any = {
   doughnut: Doughnut,
 };
 
-const SingleChartPage: React.FC<{ chartData: any; options: any }> = ({ chartData, options }) => {
+interface SingleChartPageProps {
+  chartData: any;
+  options: any;
+  onBack: () => void; // Added prop for back button handling
+}
+
+const SingleChartPage: React.FC<SingleChartPageProps> = ({ chartData, options, onBack }) => {
   const { chartType } = useParams<{ chartType: string }>();
   const navigate = useNavigate();
   // @ts-ignore
   const ChartComponent = chartComponents[chartType];
 
   const handleBackClick = () => {
+    onBack(); // Reset the chart format
     navigate(-1);
   };
 

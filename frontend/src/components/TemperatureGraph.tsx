@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'; 
+import React, { useEffect, useState } from 'react';
 import { Line, Bar, Radar, Doughnut } from 'react-chartjs-2';
 import {
   Chart as ChartJS,
@@ -84,7 +84,7 @@ const TemperatureGraph: React.FC = () => {
     return () => clearInterval(interval);
   }, []);
 
-  const labels = data.map((item) => 
+  const labels = data.map((item) =>
     isLargeChart
       ? new Date(item.timestamp).toLocaleTimeString() // Full time format
       : new Date(item.timestamp).toLocaleTimeString([], { minute: '2-digit', second: '2-digit' }) // Min:sec format for small chart
@@ -155,7 +155,11 @@ const TemperatureGraph: React.FC = () => {
   };
 
   const handleChartClick = () => {
-    setIsLargeChart(!isLargeChart);
+    setIsLargeChart(true); // Set large chart mode
+  };
+
+  const handleBackClick = () => {
+    setIsLargeChart(false); // Reset chart size when back button is clicked
   };
 
   return (
@@ -193,18 +197,7 @@ const TemperatureGraph: React.FC = () => {
                     <div className="flex flex-col items-center bg-white shadow-md rounded-lg p-5 transition transform hover:-translate-y-2 hover:shadow-xl">
                       <h2 className="text-lg font-medium mb-3 text-gray-700">Bar Chart</h2>
                       <div className="w-full h-64">
-                      <Bar 
-                        data={{ 
-                          ...commonData, 
-                          datasets: [
-                            { 
-                              ...commonData.datasets[0], 
-                              borderRadius: 5 
-                            }
-                          ] 
-                        }} 
-                        options={options} 
-                      />
+                        <Bar data={commonData} options={options} />
                       </div>
                     </div>
                   </Link>
@@ -233,7 +226,16 @@ const TemperatureGraph: React.FC = () => {
             </div>
           }
         />
-        <Route path="/chart/:chartType" element={<SingleChartPage chartData={commonData} options={options} />} />
+        <Route
+          path="/chart/:chartType"
+          element={
+            <SingleChartPage
+              chartData={commonData}
+              options={options}
+              onBack={handleBackClick} // Pass the back handler function here
+            />
+          }
+        />
       </Routes>
     </Router>
   );
