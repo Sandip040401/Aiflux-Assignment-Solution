@@ -44,7 +44,7 @@ This repository contains a real-time temperature monitoring system with the foll
     In your `backend` directory, create or update the `.env` file with the following environment variables to match the values in the `docker-compose.yml` file:
     
     ```plaintext
-    DATABASE_URL=postgresql://myuser:mypassword@localhost:5432/mydatabase
+    DATABASE_URL=postgresql://admin:admin@localhost:5432/temperature_db?schema=public
     ```
     ### 4. Verify the Connection with Prisma
     Once Docker is running the PostgreSQL container, you can verify the connection by running:
