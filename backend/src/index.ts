@@ -1,11 +1,9 @@
-// index.ts
 import express from 'express';
 import { PrismaClient } from '@prisma/client';
 import { spawn } from 'child_process';
 import cors from 'cors';
 import path from 'path';
-import './mqttSubscriber';
-
+import './mqttSubscriber';  // Assuming mqttSubscriber is set up correctly
 
 const app = express();
 const prisma = new PrismaClient();
@@ -13,6 +11,7 @@ const prisma = new PrismaClient();
 // CORS middleware
 app.use(cors());
 
+// API to fetch temperature data from the past minute
 app.get('/temperatures', async (req, res) => {
   const now = new Date();
   const oneMinuteAgo = new Date(now.getTime() - 60 * 1000);
@@ -29,9 +28,9 @@ app.get('/temperatures', async (req, res) => {
   res.json(temperatures);
 });
 
-// Python scripts
+// Function to run Python scripts
 const runPythonFile = (fileName: string) => {
-  const pythonProcess = spawn('python', [path.join(__dirname, fileName)]);
+  const pythonProcess = spawn('python3', [path.join(__dirname, 'src', fileName)]);  // Ensure proper path
 
   pythonProcess.stdout.on('data', (data) => {
     console.log(`stdout: ${data}`);
@@ -46,12 +45,12 @@ const runPythonFile = (fileName: string) => {
   });
 };
 
-// subscriber.py and publisher.py
+// Run subscriber.py and publisher.py located in src folder
 runPythonFile('subscriber.py');
 runPythonFile('publisher.py');
 
+// Server listening
 const PORT = process.env.PORT || 5000;
-
 app.listen(PORT, () => {
-  console.log(`Server running on ${PORT}`);
+  console.log(`Server running on port ${PORT}`);
 });
