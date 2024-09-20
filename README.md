@@ -19,8 +19,6 @@ The website is also deployed feel free to check it [Note: requests may delay ini
 │   │   ├── subscriber.py                 # Python subscriber script
 │   │   └── publisher.py                  # Python publisher script
 │   │
-│   ├── /config
-│   │   └── serverConfig.ts               # Server and CORS configuration
 │   │
 │   ├── /utils
 │   │   └── runPython.ts                  # Utility for running Python files
