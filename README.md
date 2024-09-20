@@ -1,6 +1,44 @@
-the website is also deployed feel free to check it [Note: requests may delay initially as it is hosted on a free server]
+The website is also deployed feel free to check it [Note: requests may delay initially as it is hosted on a free server]
 ---
-
+# Backend Folder Structure
+```bash
+/project-root
+│
+├── /src
+│   ├── /controllers
+│   │   └── temperatureController.ts      # Controller logic for fetching temperature data
+│   │
+│   ├── /services
+│   │   ├── prismaService.ts              # Prisma initialization and management
+│   │   └── mqttSubscriber.ts             # MQTT subscription logic
+│   │
+│   ├── /routes
+│   │   └── temperatureRoutes.ts          # Temperature API routes
+│   │
+│   ├── /scripts
+│   │   ├── subscriber.py                 # Python subscriber script
+│   │   └── publisher.py                  # Python publisher script
+│   │
+│   │
+│   ├── /utils
+│   │   └── runPython.ts                  # Utility for running Python files
+│   │
+│   ├── app.ts                            # Main Express app setup
+│   └── index.ts                          # Entry point, runs the server
+│
+├── /prisma
+│   └── schema.prisma                     # Prisma schema file
+│
+├── docker-compose.yml                # Docker setup for PostgreSQL and other services
+│  
+│
+├── /node_modules                         # Node.js dependencies
+│
+├── .env                                  # Environment variables
+├── package.json                          # Project dependencies and scripts
+├── tsconfig.json                         # TypeScript configuration
+└── prisma.schema                         # Prisma database schema
+```
 # Temperature Monitoring System
 
 This repository contains a real-time temperature monitoring system with the following components:
