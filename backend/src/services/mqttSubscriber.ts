@@ -1,12 +1,8 @@
-
-// mqttSubscriber.ts
 import mqtt from 'mqtt';
-import { PrismaClient } from '@prisma/client';
+import prisma from './prismaService';
 
-const prisma = new PrismaClient();
 const broker = 'mqtt://broker.hivemq.com';
 const topic = 'aiflux/test_topic';
-
 const client = mqtt.connect(broker);
 
 client.on('connect', () => {
