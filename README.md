@@ -1,6 +1,7 @@
 The website is also deployed feel free to check it [Note: requests may delay initially as it is hosted on a free server]
 ---
 # Backend Folder Structure
+```bash
 /project-root
 │
 ├── /src
@@ -39,7 +40,7 @@ The website is also deployed feel free to check it [Note: requests may delay ini
 ├── package.json                          # Project dependencies and scripts
 ├── tsconfig.json                         # TypeScript configuration
 └── prisma.schema                         # Prisma database schema
-
+```
 # Temperature Monitoring System
 
 This repository contains a real-time temperature monitoring system with the following components:
